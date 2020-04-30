@@ -18,7 +18,8 @@ class _LogoAppState extends State<LogoApp> with SingleTickerProviderStateMixin {
     super.initState();
     controller = new AnimationController(
         duration: const Duration(microseconds: 2000000), vsync: this);
-    animation = tween.animate(controller);
+    animation = new CurvedAnimation(parent: controller,curve: Curves.easeIn);
+//    animation = tween.animate(controller);
 //      ..addListener(() {
 //        setState(() {
 //
@@ -35,13 +36,13 @@ class _LogoAppState extends State<LogoApp> with SingleTickerProviderStateMixin {
     controller.forward();
   }
 
-  Widget build(BuildContext context) {
-    return new GrowTransition(child: new LogoWidget(),animation: animation);
-    throw UnimplementedError();
-  }
-
-//  @override
 //  Widget build(BuildContext context) {
+//    return new GrowTransition(child: new LogoWidget(),animation: animation);
+//    throw UnimplementedError();
+//  }
+
+  @override
+  Widget build(BuildContext context) {
 //    return new Center(
 //        child: new Container(
 //          margin: new EdgeInsets.symmetric(vertical: 10.0),
@@ -49,11 +50,11 @@ class _LogoAppState extends State<LogoApp> with SingleTickerProviderStateMixin {
 //          width: animation.value,
 //          child: new FlutterLogo(),
 //        )
-//    return new AnimatedLogo(
-//      animation: animation,
 //    );
-//    );
-//  }
+    return new AnimatedLogo(
+      animation: animation,
+    );
+  }
 
   @override
   void dispose() {
@@ -64,18 +65,32 @@ class _LogoAppState extends State<LogoApp> with SingleTickerProviderStateMixin {
 
 //======================================AnimatedWidget=================================//
 class AnimatedLogo extends AnimatedWidget {
+  static final _opactityTween = new Tween<double>(begin: 0.1,end: 1.0);
+  static final _sizeTween = new Tween<double>(begin: 0.0,end: 300.0);
   AnimatedLogo({Key key, Animation<double> animation})
       : super(key: key, listenable: animation);
+
   @override
   Widget build(BuildContext context) {
     final Animation<double> animation = listenable;
     return new Center(
-      child: new Container(
-        margin: new EdgeInsets.symmetric(vertical: 10.0),
-        height: animation.value,
-        width: animation.value,
-        child: new FlutterLogo(),
+      child: new Center(
+        child: new Opacity(
+          opacity: _opactityTween.evaluate(animation),
+          child: new Container(
+            margin: new EdgeInsets.symmetric(vertical: 10.0),
+            height: _sizeTween.evaluate(animation),
+            width: _sizeTween.evaluate(animation),
+            child: new FlutterLogo(),
+          ),
+        ),
       ),
+//      child: new Container(
+//        margin: new EdgeInsets.symmetric(vertical: 10.0),
+//        height: animation.value,
+//        width: animation.value,
+//        child: new FlutterLogo(),
+//      ),
     );
     throw UnimplementedError();
   }
