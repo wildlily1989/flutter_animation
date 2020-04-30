@@ -18,42 +18,42 @@ class _LogoAppState extends State<LogoApp> with SingleTickerProviderStateMixin {
     super.initState();
     controller = new AnimationController(
         duration: const Duration(microseconds: 2000000), vsync: this);
-    animation = tween.animate(controller)
-      ..addListener(() {
-        setState(() {
-
-        });
-      });
-   animation.addStatusListener((status) {
-      print("status = $status");
-      if (status == AnimationStatus.completed) {
-        controller.reverse();
-      } else if (status == AnimationStatus.dismissed){
-        controller.forward();
-      }
-    });
+    animation = tween.animate(controller);
+//      ..addListener(() {
+//        setState(() {
+//
+//        });
+//      });
+//   animation.addStatusListener((status) {
+//      print("status = $status");
+//      if (status == AnimationStatus.completed) {
+//        controller.reverse();
+//      } else if (status == AnimationStatus.dismissed){
+//        controller.forward();
+//      }
+//    });
     controller.forward();
   }
 
-//  Widget build(BuildContext context) {
-//    return new AnimatedLogo(animation: animation);
-//    throw UnimplementedError();
-//  }
-
-  @override
   Widget build(BuildContext context) {
-    return new Center(
-        child: new Container(
-          margin: new EdgeInsets.symmetric(vertical: 10.0),
-          height: animation.value,
-          width: animation.value,
-          child: new FlutterLogo(),
-        )
+    return new GrowTransition(child: new LogoWidget(),animation: animation);
+    throw UnimplementedError();
+  }
+
+//  @override
+//  Widget build(BuildContext context) {
+//    return new Center(
+//        child: new Container(
+//          margin: new EdgeInsets.symmetric(vertical: 10.0),
+//          height: animation.value,
+//          width: animation.value,
+//          child: new FlutterLogo(),
+//        )
 //    return new AnimatedLogo(
 //      animation: animation,
 //    );
-    );
-  }
+//    );
+//  }
 
   @override
   void dispose() {
@@ -79,6 +79,43 @@ class AnimatedLogo extends AnimatedWidget {
     );
     throw UnimplementedError();
   }
+}
+
+//========================================AnimatedBuilder================================//
+class GrowTransition extends StatelessWidget{
+  final Widget child;
+  final Animation<double> animation;
+  GrowTransition({this.child,this.animation});
+
+  @override
+  Widget build(BuildContext context) {
+    return new Center(
+      child: new AnimatedBuilder(
+        animation: animation,
+        builder: (BuildContext context,Widget child) {
+          return new Container(
+            height: animation.value,
+            width: animation.value,
+            child: child,
+          );
+        },
+        child: child,
+      ),
+    );
+    throw UnimplementedError();
+  }
+}
+
+class LogoWidget extends StatelessWidget{
+  @override
+  Widget build(BuildContext context) {
+    return new Container(
+      margin: new EdgeInsets.symmetric(vertical: 10.0),
+      child: new FlutterLogo(),
+    );
+    throw UnimplementedError();
+  }
+
 }
 void main() {
   runApp(new LogoApp());
