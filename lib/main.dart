@@ -13,27 +13,46 @@ class LogoApp extends StatefulWidget {
 class _LogoAppState extends State<LogoApp> with SingleTickerProviderStateMixin {
   Animation<double> animation;
   AnimationController controller;
-
-  @override
-  void initState() {
+  Tween<double> tween = new Tween(begin: 0.0,end: 300.0);
+  initState() {
     super.initState();
     controller = new AnimationController(
-        duration: const Duration(microseconds: 2000), vsync: this);
-    animation = new Tween(begin: 0.0, end: 300.0).animate(controller);
-//    ..addListener(() {
-//      setState(() {
-//
-//      });
-//    });
+        duration: const Duration(microseconds: 2000000), vsync: this);
+    animation = tween.animate(controller)
+      ..addListener(() {
+        setState(() {
+
+        });
+      });
+   animation.addStatusListener((status) {
+      print("status = $status");
+      if (status == AnimationStatus.completed) {
+        controller.reverse();
+      } else if (status == AnimationStatus.dismissed){
+        controller.forward();
+      }
+    });
     controller.forward();
   }
 
+//  Widget build(BuildContext context) {
+//    return new AnimatedLogo(animation: animation);
+//    throw UnimplementedError();
+//  }
+
   @override
   Widget build(BuildContext context) {
-    return new AnimatedLogo(
-      animation: animation,
+    return new Center(
+        child: new Container(
+          margin: new EdgeInsets.symmetric(vertical: 10.0),
+          height: animation.value,
+          width: animation.value,
+          child: new FlutterLogo(),
+        )
+//    return new AnimatedLogo(
+//      animation: animation,
+//    );
     );
-    throw UnimplementedError();
   }
 
   @override
@@ -61,7 +80,6 @@ class AnimatedLogo extends AnimatedWidget {
     throw UnimplementedError();
   }
 }
-
 void main() {
   runApp(new LogoApp());
 }
